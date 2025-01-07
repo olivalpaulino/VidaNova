@@ -501,4 +501,21 @@ public class Banco {
             e.printStackTrace();
         }
     }
+
+    public void deletarAtendimentoPorID(int id, Connection conexao) {
+        String sql = "delete from atendimento where id = ?";
+
+        try {
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1,id);
+            stmt.executeUpdate();
+
+            stmt.close();
+
+            System.out.println("O atendimento de ID: "+id+" foi deletado com sucesso!");
+        } catch(SQLException e) {
+            System.out.println("Erro ao tentar deletar o atendimento por id!");
+            e.printStackTrace();
+        }
+    }
 }

@@ -2,6 +2,10 @@ package dobackaofront.controller;
 
 import dobackaofront.model.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +23,7 @@ public class Banco {
     public Connection conectar() {
         usuario="root";
         senha="root";
-        url="jdbc:mysql://localhost:3306/vidanova";
+        url="jdbc:mysql://localhost:3306";
 
         Connection conectado = null;
 
@@ -515,6 +519,33 @@ public class Banco {
             System.out.println("O atendimento de ID: "+id+" foi deletado com sucesso!");
         } catch(SQLException e) {
             System.out.println("Erro ao tentar deletar o atendimento por id!");
+            e.printStackTrace();
+        }
+    }
+
+    public void executarScript(Connection conexao) {
+        try {
+            String script = new String(Files.readAllBytes(Paths.get("banco.sql")));
+            System.out.println("O Arquivo foi lido com Sucesso!");
+            try {
+                Statement stmt = conexao.createStatement();
+                String[] comandos = script.split(";");
+
+                for (String comando: comandos) {
+                    comando = comando.trim();
+
+                    if (!comando.isEmpty()) {
+                        stmt.execute(comando);
+                    }
+                }
+                stmt.close();
+                System.out.println("O script banco.sql foi executado corretamente!");
+            } catch (SQLException sqlException) {
+                System.out.println("Não foi possível executar o script!");
+                sqlException.printStackTrace();
+            }
+        } catch(IOException e) {
+            System.out.println("Erro ao ler o arquivo!");
             e.printStackTrace();
         }
     }

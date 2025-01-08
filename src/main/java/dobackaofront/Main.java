@@ -9,9 +9,9 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         Banco b = new Banco();
         Connection conexao = b.conectar();
+
+        b.executarScript(conexao);
+
         b.desconectar(conexao);
-
-
     }
-
 }

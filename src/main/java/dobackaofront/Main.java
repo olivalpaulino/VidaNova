@@ -11,6 +11,8 @@ public class Main {
         Connection conexao = b.conectar();
 
         b.executarScript(conexao);
+        b.executarBackup(conexao);
+
 
         b.desconectar(conexao);
     }

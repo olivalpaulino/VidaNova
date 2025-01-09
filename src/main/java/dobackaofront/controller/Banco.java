@@ -549,4 +549,32 @@ public class Banco {
             e.printStackTrace();
         }
     }
+
+    public void executarBackup(Connection conexao) {
+        try {
+            String script = new String(Files.readAllBytes(Paths.get("backup.sql")));
+            System.out.println("O Arquivo de backup.sql foi lido com Sucesso!");
+            try {
+                Statement stmt = conexao.createStatement();
+                String[] comandos = script.split(";");
+
+                for (String comando: comandos) {
+                    comando = comando.trim();
+
+                    if (!comando.isEmpty()) {
+                        stmt.execute(comando);
+                    }
+                }
+                stmt.close();
+                System.out.println("O backup.sql foi executado corretamente!");
+            } catch (SQLException sqlException) {
+                System.out.println("Não foi possível executar o backup.sql!");
+                sqlException.printStackTrace();
+            }
+        } catch(IOException e) {
+            System.out.println("Erro ao ler o arquivo backup.sql!");
+            e.printStackTrace();
+        }
+    }
+
 }

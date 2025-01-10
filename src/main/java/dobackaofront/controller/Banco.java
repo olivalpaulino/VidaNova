@@ -302,7 +302,7 @@ public class Banco {
             PreparedStatement stmtPaciente = conexao.prepareStatement(sqlPaciente);
             ResultSet rsPaciente = stmtPaciente.executeQuery();
 
-            PreparedStatement stmtEnderco = conexao.prepareStatement(sqlEndereco);
+            PreparedStatement stmtEndereco = conexao.prepareStatement(sqlEndereco);
             ResultSet rsEndereco = null;
 
             PreparedStatement stmtTelefone = conexao.prepareStatement(sqlTelefone);
@@ -316,8 +316,8 @@ public class Banco {
                 paciente.setNome(rsPaciente.getString("nome"));
                 paciente.setCpf(rsPaciente.getString("cpf"));
 
-                stmtEnderco.setInt(1,paciente.getId());
-                rsEndereco = stmtEnderco.executeQuery();
+                stmtEndereco.setInt(1,paciente.getId());
+                rsEndereco = stmtEndereco.executeQuery();
 
                 Endereco endereco = new Endereco();
                 endereco.setId(rsEndereco.getInt("paciente_id"));
@@ -345,10 +345,10 @@ public class Banco {
             rsPaciente.close();
 
             stmtPaciente.close();
-            stmtEnderco.close();
+            stmtEndereco.close();
             stmtTelefone.close();
         } catch(SQLException e) {
-            System.out.println("Erro ao buscar os cadastros dos médicos!");
+            System.out.println("Erro ao buscar os cadastros dos pacientes!");
             e.printStackTrace();
         }
         return pacientes;

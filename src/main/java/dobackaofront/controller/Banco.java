@@ -296,7 +296,7 @@ public class Banco {
         ArrayList<Paciente> pacientes = new ArrayList<>();
         String sqlPaciente = "select id,nome,cpf from paciente";
         String sqlEndereco = "select id, paciente_id, numero, bairro, rua from endereco where paciente_id = ?";
-        String sqlTelefone = "select id, paciente_id, telefone where paciente_id = ?";
+        String sqlTelefone = "select id, paciente_id, numero from telefone where paciente_id = ?";
 
         try {
             PreparedStatement stmtPaciente = conexao.prepareStatement(sqlPaciente);

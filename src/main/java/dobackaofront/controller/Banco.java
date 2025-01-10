@@ -2,8 +2,7 @@ package dobackaofront.controller;
 
 import dobackaofront.model.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -629,6 +628,24 @@ public class Banco {
 
         for (Paciente p: pacientesCompleto) {
             System.out.println(p.toString());
+        }
+
+    }
+
+    public void criarScriptDoBancoDeDados() {
+        try {
+            OutputStream os = new FileOutputStream("backup_geral.sql", true);
+            OutputStreamWriter osw = new OutputStreamWriter(os);
+            BufferedWriter bw = new BufferedWriter(osw);
+
+            bw.write("Oi! Escrevi uma linha no arquivo");
+            bw.newLine();
+
+            bw.close();
+            osw.close();
+            os.close();
+        } catch (IOException e) {
+            System.out.println("Não foi possível criar o arquivo!");
         }
 
     }

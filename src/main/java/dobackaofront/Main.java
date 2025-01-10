@@ -17,7 +17,8 @@ public class Main {
         //b.executarBackup(conexao);
 
 
-        b.backupGeral(conexao);
-        b.desconectar(conexao);
+        //b.backupGeral(conexao);
+        //b.desconectar(conexao);
+        b.criarScriptDoBancoDeDados();
     }
 }

@@ -16,6 +16,7 @@ public class Paciente {
         this.cpf = cpf;
         this.telefones = new ArrayList<>();
         this.endereco = new Endereco();
+        this.atendimentos = new ArrayList<>();
     }
 
     public Paciente(String nome, String cpf) {

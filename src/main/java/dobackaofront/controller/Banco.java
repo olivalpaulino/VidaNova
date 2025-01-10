@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Banco {
-    // usario, senha, url=localhost:3306/vidanova
+    // usario, senha, url=localhost:3306
     private String usuario;
     private String senha;
     private String url;
@@ -23,7 +23,7 @@ public class Banco {
     public Connection conectar() {
         usuario="root";
         senha="root";
-        url="jdbc:mysql://localhost:3306";
+        url="jdbc:mysql://localhost:3306/vidanova";
 
         Connection conectado = null;
 
@@ -293,63 +293,27 @@ public class Banco {
     }
 
     public ArrayList<Paciente> pesquisarTodosPacientes(Connection conexao) {
+        String sql = "select id, nome, cpf from paciente";
         ArrayList<Paciente> pacientes = new ArrayList<>();
-        String sqlPaciente = "select id,nome,cpf from paciente";
-        String sqlEndereco = "select id, paciente_id, numero, bairro, rua from endereco where paciente_id = ?";
-        String sqlTelefone = "select id, paciente_id, numero from telefone where paciente_id = ?";
 
         try {
-            PreparedStatement stmtPaciente = conexao.prepareStatement(sqlPaciente);
-            ResultSet rsPaciente = stmtPaciente.executeQuery();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
 
-            PreparedStatement stmtEndereco = conexao.prepareStatement(sqlEndereco);
-            ResultSet rsEndereco = null;
-
-            PreparedStatement stmtTelefone = conexao.prepareStatement(sqlTelefone);
-            ResultSet rsTelefone = null;
-
-            while(rsPaciente.next()) {
+            while(rs.next()) {
                 Paciente paciente = new Paciente();
-
-                // rs.getTipoDoDado("nome da coluna");
-                paciente.setId(rsPaciente.getInt("id"));
-                paciente.setNome(rsPaciente.getString("nome"));
-                paciente.setCpf(rsPaciente.getString("cpf"));
-
-                stmtEndereco.setInt(1,paciente.getId());
-                rsEndereco = stmtEndereco.executeQuery();
-
-                Endereco endereco = new Endereco();
-                endereco.setId(rsEndereco.getInt("paciente_id"));
-                endereco.setRua(rsEndereco.getString("rua"));
-                endereco.setBairro(rsEndereco.getString("bairro"));
-                endereco.setNumero(rsEndereco.getInt("numero"));
-
-                paciente.setEndereco(endereco);
-
-                stmtTelefone.setInt(1,paciente.getId());
-                rsTelefone = stmtTelefone.executeQuery();
-
-                ArrayList<Telefone> telefones = new ArrayList<>();
-                while(rsTelefone.next()) {
-                    Telefone telefone = new Telefone(rsTelefone.getString("numero"));
-                    telefones.add(telefone);
-                }
-
-                paciente.setTelefones(telefones);
-
+                paciente.setId(rs.getInt("id"));
+                paciente.setNome(rs.getString("nome"));
+                paciente.setCpf(rs.getString("cpf"));
                 pacientes.add(paciente);
             }
-            rsTelefone.close();
-            rsEndereco.close();
-            rsPaciente.close();
 
-            stmtPaciente.close();
-            stmtEndereco.close();
-            stmtTelefone.close();
-        } catch(SQLException e) {
-            System.out.println("Erro ao buscar os cadastros dos pacientes!");
-            e.printStackTrace();
+            rs.close();
+            stmt.close();
+
+            System.out.println("Todos os pacientes foram recuperados do banco de dados!");
+        } catch (SQLException e) {
+            System.out.println("Erro ao recuperar todos os pacientes!");
         }
         return pacientes;
     }
@@ -639,10 +603,35 @@ public class Banco {
         }
     }
 
-    public void backup(Connection conexao) {
-        ArrayList<Paciente> pacientes = pesquisarTodosPacientes(conexao);
+    public void backupGeral(Connection conexao) {
         ArrayList<Medico> medicos = pesquisarTodosMedicos(conexao);
+        ArrayList<Paciente> pacientes = pesquisarTodosPacientes(conexao);
+        ArrayList<Paciente> pacientesCompleto = new ArrayList<>();
         ArrayList<Atendimento> atendimentos = listarTodosAtendimentos(conexao);
+
+        for (Paciente paciente: pacientes) {
+            String cpf = paciente.getCpf();
+            Paciente pacienteCompleto = pesquisar(cpf, conexao);
+            pacientesCompleto.add(pacienteCompleto);
+        }
+
+        //pacientes = null;
+
+        for (Atendimento atendimento: atendimentos) {
+           int id_paciente = atendimento.getPaciente_id();
+
+           for (Paciente paciente: pacientesCompleto) {
+               if (id_paciente == paciente.getId()) {
+                   paciente.adicionarAtendimento(atendimento.getMedico_id(), atendimento.getPaciente_id(), atendimento.getData());
+               }
+           }
+        }
+
+        for (Paciente p: pacientesCompleto) {
+            System.out.println(p.toString());
+        }
+
     }
+
 
 }

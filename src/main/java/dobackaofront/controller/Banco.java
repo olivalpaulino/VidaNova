@@ -84,8 +84,8 @@ public class Banco {
         }
     }
 
-    public List<Medico> pesquisarTodosMedicos(Connection conexao) {
-        List<Medico> medicos = new ArrayList<>();
+    public ArrayList<Medico> pesquisarTodosMedicos(Connection conexao) {
+        ArrayList<Medico> medicos = new ArrayList<>();
         String sql = "select id,nome,crm from medico";
 
         try {
@@ -290,6 +290,68 @@ public class Banco {
             e.printStackTrace();
         }
         return p;
+    }
+
+    public ArrayList<Paciente> pesquisarTodosPacientes(Connection conexao) {
+        ArrayList<Paciente> pacientes = new ArrayList<>();
+        String sqlPaciente = "select id,nome,cpf from paciente";
+        String sqlEndereco = "select id, paciente_id, numero, bairro, rua from endereco where paciente_id = ?";
+        String sqlTelefone = "select id, paciente_id, telefone where paciente_id = ?";
+
+        try {
+            PreparedStatement stmtPaciente = conexao.prepareStatement(sqlPaciente);
+            ResultSet rsPaciente = stmtPaciente.executeQuery();
+
+            PreparedStatement stmtEnderco = conexao.prepareStatement(sqlEndereco);
+            ResultSet rsEndereco = null;
+
+            PreparedStatement stmtTelefone = conexao.prepareStatement(sqlTelefone);
+            ResultSet rsTelefone = null;
+
+            while(rsPaciente.next()) {
+                Paciente paciente = new Paciente();
+
+                // rs.getTipoDoDado("nome da coluna");
+                paciente.setId(rsPaciente.getInt("id"));
+                paciente.setNome(rsPaciente.getString("nome"));
+                paciente.setCpf(rsPaciente.getString("cpf"));
+
+                stmtEnderco.setInt(1,paciente.getId());
+                rsEndereco = stmtEnderco.executeQuery();
+
+                Endereco endereco = new Endereco();
+                endereco.setId(rsEndereco.getInt("paciente_id"));
+                endereco.setRua(rsEndereco.getString("rua"));
+                endereco.setBairro(rsEndereco.getString("bairro"));
+                endereco.setNumero(rsEndereco.getInt("numero"));
+
+                paciente.setEndereco(endereco);
+
+                stmtTelefone.setInt(1,paciente.getId());
+                rsTelefone = stmtTelefone.executeQuery();
+
+                ArrayList<Telefone> telefones = new ArrayList<>();
+                while(rsTelefone.next()) {
+                    Telefone telefone = new Telefone(rsTelefone.getString("numero"));
+                    telefones.add(telefone);
+                }
+
+                paciente.setTelefones(telefones);
+
+                pacientes.add(paciente);
+            }
+            rsTelefone.close();
+            rsEndereco.close();
+            rsPaciente.close();
+
+            stmtPaciente.close();
+            stmtEnderco.close();
+            stmtTelefone.close();
+        } catch(SQLException e) {
+            System.out.println("Erro ao buscar os cadastros dos médicos!");
+            e.printStackTrace();
+        }
+        return pacientes;
     }
 
     public void atualizar(Paciente paciente_novo, Connection conexao) {
@@ -575,6 +637,12 @@ public class Banco {
             System.out.println("Erro ao ler o arquivo backup.sql!");
             e.printStackTrace();
         }
+    }
+
+    public void backup(Connection conexao) {
+        ArrayList<Paciente> pacientes = pesquisarTodosPacientes(conexao);
+        ArrayList<Medico> medicos = pesquisarTodosMedicos(conexao);
+        ArrayList<Atendimento> atendimentos = listarTodosAtendimentos(conexao);
     }
 
 }

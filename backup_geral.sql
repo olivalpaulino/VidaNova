@@ -20,3 +20,7 @@ insert into telefone(paciente_id,numero) values(3,"82999992212");
 insert into paciente(id,nome,cpf) values(4,"DEBUG","12345678914");
 insert into endereco(paciente_id,numero,bairro,rua) values(4,126,"DEBUGADOS","DEBUB RUA");
 insert into telefone(paciente_id,numero) values(4,"82999992213");
+insert into atendimento(1,1,"10/10/2025");
+insert into atendimento(2,1,"10/10/2025");
+insert into atendimento(3,2,"10/10/2025");
+insert into atendimento(4,2,"10/10/2025");

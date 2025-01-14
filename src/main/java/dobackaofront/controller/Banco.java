@@ -630,11 +630,11 @@ public class Banco {
             System.out.println(p.toString());
         }
 
-        criarScriptDoBancoDeDados(medicos, pacientesCompleto);
+        criarScriptDoBancoDeDados(medicos, pacientesCompleto, atendimentos);
 
     }
 
-    public void criarScriptDoBancoDeDados(ArrayList<Medico> medicos, ArrayList<Paciente> pacientes) {
+    public void criarScriptDoBancoDeDados(ArrayList<Medico> medicos, ArrayList<Paciente> pacientes, ArrayList<Atendimento> atendimentos) {
         try {
             OutputStream os = new FileOutputStream("backup_geral.sql", false);
             OutputStreamWriter osw = new OutputStreamWriter(os);
@@ -658,6 +658,11 @@ public class Banco {
                     bw.write("insert into telefone(paciente_id,numero) values("+paciente.getId()+",\""+telefone.getNumero()+"\");");
                     bw.newLine();
                 }
+            }
+
+            for(Atendimento atendimento: atendimentos) {
+                bw.write("insert into atendimento("+atendimento.getPaciente_id()+","+atendimento.getMedico_id()+",\""+atendimento.getData()+"\");");
+                bw.newLine();
             }
             bw.close();
             osw.close();

@@ -630,17 +630,35 @@ public class Banco {
             System.out.println(p.toString());
         }
 
+        criarScriptDoBancoDeDados(medicos, pacientesCompleto);
+
     }
 
-    public void criarScriptDoBancoDeDados() {
+    public void criarScriptDoBancoDeDados(ArrayList<Medico> medicos, ArrayList<Paciente> pacientes) {
         try {
-            OutputStream os = new FileOutputStream("backup_geral.sql", true);
+            OutputStream os = new FileOutputStream("backup_geral.sql", false);
             OutputStreamWriter osw = new OutputStreamWriter(os);
             BufferedWriter bw = new BufferedWriter(osw);
 
-            bw.write("Oi! Escrevi uma linha no arquivo");
-            bw.newLine();
+            for(Medico medico: medicos) {
+                bw.write("insert into medico(id,nome,crm) values("+medico.getId()+",\""+medico.getNome()+"\",\""+medico.getCrm()+"\");");
+                bw.newLine();
+            }
 
+            for(Paciente paciente: pacientes) {
+                bw.write("insert into paciente(id,nome,cpf) values("+paciente.getId()+",\""+paciente.getNome()+"\",\""+paciente.getCpf()+"\");");
+                bw.newLine();
+                String rua = paciente.getEndereco().getRua();
+                String bairro = paciente.getEndereco().getBairro();
+                int numero = paciente.getEndereco().getNumero();
+                bw.write("insert into endereco(paciente_id,numero,bairro,rua) values("+paciente.getId()+","+numero+",\""+bairro+"\",\""+rua+"\");");
+                bw.newLine();
+
+                for(Telefone telefone: paciente.getTelefones()) {
+                    bw.write("insert into telefone(paciente_id,numero) values("+paciente.getId()+",\""+telefone.getNumero()+"\");");
+                    bw.newLine();
+                }
+            }
             bw.close();
             osw.close();
             os.close();

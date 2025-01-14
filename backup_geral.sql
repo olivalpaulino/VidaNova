@@ -1,1 +1,22 @@
-Oi! Escrevi uma linha no arquivo
+insert into medico(id,nome,crm) values(1,"Carlos","1010");
+insert into medico(id,nome,crm) values(2,"Miguel","1011");
+insert into medico(id,nome,crm) values(3,"Pedro","1012");
+insert into medico(id,nome,crm) values(4,"Josué","1013");
+insert into medico(id,nome,crm) values(5,"Marilía","1014");
+insert into medico(id,nome,crm) values(6,"Gabriela","1015");
+insert into medico(id,nome,crm) values(7,"Patrícia","1016");
+insert into medico(id,nome,crm) values(8,"Jorge","1017");
+insert into medico(id,nome,crm) values(9,"Fernando","1018");
+insert into medico(id,nome,crm) values(10,"Sofia","1019");
+insert into paciente(id,nome,cpf) values(1,"Olival","12345678911");
+insert into endereco(paciente_id,numero,bairro,rua) values(1,123,"Centro","Pedro Mota");
+insert into telefone(paciente_id,numero) values(1,"82999992210");
+insert into paciente(id,nome,cpf) values(2,"Pedro","12345678912");
+insert into endereco(paciente_id,numero,bairro,rua) values(2,124,"Juca Sampaio","Radialista Antonio");
+insert into telefone(paciente_id,numero) values(2,"82999992211");
+insert into paciente(id,nome,cpf) values(3,"Jessica","12345678913");
+insert into endereco(paciente_id,numero,bairro,rua) values(3,125,"Vila Maria","Euclides da Silva");
+insert into telefone(paciente_id,numero) values(3,"82999992212");
+insert into paciente(id,nome,cpf) values(4,"DEBUG","12345678914");
+insert into endereco(paciente_id,numero,bairro,rua) values(4,126,"DEBUGADOS","DEBUB RUA");
+insert into telefone(paciente_id,numero) values(4,"82999992213");
